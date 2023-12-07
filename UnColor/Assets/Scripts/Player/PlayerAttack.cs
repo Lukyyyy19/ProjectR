@@ -27,15 +27,15 @@ public class PlayerAttack : MonoBehaviour
     private void Update()
     {
         _deltaCanAttackThreshold -= Time.deltaTime;
-        canAttack = _playerInput.inputsQueue.Count > 0 &&
-                    _playerInput.inputsQueue.Peek() == InputActions.Attack &&
+        canAttack = _playerInput.attackInputQueue.Count > 0 &&
+                    _playerInput.attackInputQueue.Peek() == InputActions.Attack &&
                     _deltaCanAttackThreshold <= 0;
         //if (_deltaCanAttackThreshold > 0) _player.IsAttacking = false;
         _player.IsAttacking = canAttack;
         _player.atacktest = _deltaCanAttackThreshold > 0;
         if (canAttack)
         {
-            _playerInput.inputsQueue.Dequeue();
+            _playerInput.attackInputQueue.Dequeue();
             Attack(_weapon);
         }
     }

@@ -27,9 +27,9 @@ public abstract class Entity : MonoBehaviour,IDamageable
     [SerializeField]protected bool _isGrounded;
     [SerializeField]protected bool _isMoving;
     [SerializeField] protected Vector2 _dir;
-    protected bool _facingRight = true;
+    [SerializeField]protected bool _facingRight = true;
     
-    [Header("In Air")] 
+    [Header("Jump")] 
     [SerializeField] protected bool _isFalling;
     [SerializeField] protected float _jumpForce;
         
@@ -41,6 +41,9 @@ public abstract class Entity : MonoBehaviour,IDamageable
     [Header("Checkers Vars")] 
     [SerializeField, Range(0, 10)] protected float _groundRadius;
     [SerializeField] private LayerMask _groundLayer;
+    [SerializeField, Range(0, 1)] protected float _smthgInFrontRayLgth;
+    [SerializeField] private LayerMask _smthgInFrontLayer;
+    [SerializeField] protected bool _smthgInFront;
 
     protected State<States> idle;
     protected State<States> walk;
@@ -87,7 +90,7 @@ public abstract class Entity : MonoBehaviour,IDamageable
         StateConfigurer.Create(fall)
             .SetTransition(States.Idle,idle)
             .SetTransition(States.Attack,attack)
-            .SetTransition(States.Walk,walk)
+            .SetTransition(States.Jump,jump)
             .Done();
         AddNewEvent();
         ConfigureEvents();
@@ -99,6 +102,7 @@ public abstract class Entity : MonoBehaviour,IDamageable
     {
         _fsm.Update();
         _isGrounded = Physics2D.Raycast(transform.position, Vector2.down, _groundRadius,_groundLayer);
+        _smthgInFront = Physics2D.Raycast((transform.position),  _facingRight?transform.right:transform.right*-1, _smthgInFrontRayLgth,_smthgInFrontLayer);
     }
 
     protected virtual void FixedUpdate()
